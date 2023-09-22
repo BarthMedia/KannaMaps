@@ -14,12 +14,18 @@ declare global {
   var $: any;
   var ls: any;
   var gsap: any;
+  interface Window {
+    KannaMaps: any;
+  }
 }
 
 // + Functions +
 
 // Main
 const main = async function () {
+  // Add KannaMaps to Dom
+  window.KannaMaps = model.state;
+
   // Initialize model
   await model.init();
 
