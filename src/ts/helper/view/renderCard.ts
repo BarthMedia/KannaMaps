@@ -13,8 +13,6 @@ export default function (clone: HTMLElement, index: number) {
   const notAvailableString =
     list.getAttribute('data-not-available-string') || 'n.v.';
 
-  if (!index) console.log(data);
-
   // Elements exist
   if (!data) {
     console.error(
