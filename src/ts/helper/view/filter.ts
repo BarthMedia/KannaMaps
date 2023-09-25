@@ -7,6 +7,17 @@ import * as config from '../../config';
 import genetics from './filters/genetics';
 import availability from './filters/availability';
 import areaOfApplications from './filters/areaOfApplications';
+import effects from './filters/effects';
+import activities from './filters/activities';
+import sideEffects from './filters/sideEffects';
+import cannabinoids from './filters/cannabinoids';
+import terpenes from './filters/terpenes';
+import tastes from './filters/tastes';
+import irradiations from './filters/irradiations';
+import producers from './filters/producers';
+import qualities from './filters/qualities';
+import sort from './filters/sort';
+import priceRange from './filters/priceRange';
 
 // + Exports +
 export default function init(state: any) {
@@ -17,7 +28,22 @@ export default function init(state: any) {
   state.elements.reset = reset;
 
   // Values
-  const functionRegister = [genetics, availability, areaOfApplications];
+  const functionRegister = [
+    genetics,
+    availability,
+    areaOfApplications,
+    effects,
+    activities,
+    sideEffects,
+    cannabinoids,
+    terpenes,
+    tastes,
+    irradiations,
+    producers,
+    qualities,
+    sort,
+    priceRange,
+  ];
 
   // Guard
   if (!filters || !reset)
@@ -31,6 +57,9 @@ export default function init(state: any) {
   state.filters.addParams = (key: string, value: string) => {
     // Add
     params[key] = value;
+
+    // If not pagination, reset pagination
+    if (key !== 'seite') params['seite'] = '';
 
     // Trigger
     trigger();
@@ -109,6 +138,10 @@ export default function init(state: any) {
       f['reset']();
     });
   });
+
+  // Init reset button styles
+  if (location.search !== '') reset?.classList.remove('cc-inactive');
+  else reset?.classList.add('cc-inactive');
 
   // On pagination call, take existing location.search params
   // and add pagination params to it

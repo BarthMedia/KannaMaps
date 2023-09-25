@@ -4,6 +4,7 @@
 import * as config from '../../config';
 import * as utils from './utils';
 import renderCard from './renderCard';
+import * as model from '../../model';
 
 // + Exports +
 export default function (showSkeleton: boolean) {
@@ -31,7 +32,7 @@ export default function (showSkeleton: boolean) {
 
   // Product data exists
   try {
-    if (typeof data.items.length !== 'number')
+    if (typeof data?.items?.length !== 'number')
       'KannaMaps.productData.items is not an array!';
   } catch (err) {
     console.error(
@@ -92,6 +93,26 @@ export default function (showSkeleton: boolean) {
     // Clear content
     list.innerHTML = '';
 
+    // Show total results
+    state.elements.totalResults.forEach((el: HTMLElement, index: number) => {
+      // Render
+      el.innerHTML = data.itemsTotal;
+      const plural = state.elements.totalResultsPlural[index];
+      if (data.itemsTotal !== 1) plural.style.display = '';
+      else plural.style.display = 'none';
+    });
+
+    // Empty state
+    if (data.itemsTotal > 0) state.elements.emptyState.style.display = 'none';
+    else state.elements.emptyState.style.display = 'flex';
+
+    // Pagination
+    if (data.pageTotal < 2) state.elements.emptyState.style.display = 'none';
+    else {
+      initPagination();
+      state.elements.paginationWrapper.style.display = 'flex';
+    }
+
     // Data
     data.items.forEach((_: any, index: number) => {
       // Elements
@@ -103,5 +124,116 @@ export default function (showSkeleton: boolean) {
       // Append
       if (res !== false) list.append(clone);
     });
+  }
+
+  // + + + Pagination function + + +
+  function initPagination() {
+    // Elements
+    const wrapper: HTMLElement = state.elements.paginationWrapper;
+    const textTemplate: HTMLElement = state.elements.paginationNumberTemplate;
+
+    // Clear
+    wrapper.innerHTML = '';
+
+    // Access pagination data (assuming you have this data available)
+    const currentPage: number = data.curPage;
+    const nextPage: number = data.nextPage;
+    const prevPage: number = data.prevPage;
+    const totalPages: number = data.pageTotal;
+
+    // Number of page buttons to show before and after the ellipsis
+    const pagesBeforeEllipsis = 2; // Adjust this value
+    const pagesAfterEllipsis = 2; // Adjust this value
+
+    // Create pagination elements
+    if (totalPages > 1) {
+      // Create a "Previous" button if there's a previous page
+      if (prevPage) {
+        const prevButton = textTemplate.cloneNode(true) as HTMLElement;
+        prevButton.classList.add('cc-prev');
+        prevButton.textContent = 'Vorherige';
+        prevButton.addEventListener('click', () => goToPage(prevPage));
+        wrapper.appendChild(prevButton);
+      }
+
+      // Create page number buttons
+      if (totalPages <= pagesBeforeEllipsis + pagesAfterEllipsis + 1) {
+        // Display all page buttons if there are fewer pages than the total number of buttons to show
+        for (let page = 1; page <= totalPages; page++) {
+          createPageButton(page);
+        }
+      } else {
+        // Determine which page numbers to display with ellipsis
+        const pagesToDisplay = [];
+
+        if (currentPage <= pagesBeforeEllipsis + 1) {
+          // Display pages 1 to (2 * pagesBeforeEllipsis + 1) when current page is near the beginning
+          for (let page = 1; page <= 2 * pagesBeforeEllipsis + 1; page++) {
+            createPageButton(page);
+          }
+          addEllipsis();
+        } else if (currentPage >= totalPages - pagesAfterEllipsis) {
+          // Display pages (totalPages - 2 * pagesAfterEllipsis) to totalPages when current page is near the end
+          addEllipsis();
+          for (
+            let page = totalPages - 2 * pagesAfterEllipsis;
+            page <= totalPages;
+            page++
+          ) {
+            createPageButton(page);
+          }
+        } else {
+          // Display pages before and after the current page with ellipsis in between
+          addEllipsis();
+          for (
+            let page = currentPage - pagesBeforeEllipsis;
+            page <= currentPage + pagesAfterEllipsis;
+            page++
+          ) {
+            createPageButton(page);
+          }
+          addEllipsis();
+        }
+      }
+
+      // Create a "Next" button if there's a next page
+      if (nextPage) {
+        const nextButton = textTemplate.cloneNode(true) as HTMLElement;
+        nextButton.classList.add('cc-next');
+        nextButton.textContent = 'Nächste';
+        nextButton.addEventListener('click', () => goToPage(nextPage));
+        wrapper.appendChild(nextButton);
+      }
+    }
+
+    // Function to create a page number button
+    function createPageButton(page: number) {
+      const pageNumberButton = textTemplate.cloneNode(true) as HTMLElement;
+      pageNumberButton.textContent = page.toString();
+
+      if (page === currentPage) {
+        pageNumberButton.classList.add('cc-current'); // Highlight the current page
+      }
+
+      pageNumberButton.addEventListener('click', () => goToPage(page));
+      wrapper.appendChild(pageNumberButton);
+    }
+
+    // Function to add an ellipsis button
+    function addEllipsis() {
+      const ellipsisButton = textTemplate.cloneNode(true) as HTMLElement;
+      ellipsisButton.classList.add('cc-ellipsis');
+      ellipsisButton.textContent = '...';
+      ellipsisButton.classList.add('ellipsis'); // Add a class for styling ellipsis
+      wrapper.appendChild(ellipsisButton);
+    }
+
+    // Function to handle page navigation
+    function goToPage(page: number) {
+      // Implement your logic to navigate to the selected page
+      // For example, you can update the UI to display the selected page's content
+      // or trigger a data fetch for the new page's data.
+      state.filters.addParams('seite', page.toString());
+    }
   }
 }

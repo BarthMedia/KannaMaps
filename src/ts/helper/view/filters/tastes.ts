@@ -7,40 +7,20 @@ import * as config from '../../../config';
 
 // + Class +
 class Class {
-  #addClass(el: HTMLElement) {
-    // Values
-    const elements = [el];
-    el.childNodes.forEach(node => elements.push(node));
-
-    // Classlist
-    elements.forEach(el => el.classList.add('cc-active'));
-  }
-
-  #removeClass(el: HTMLElement) {
-    // Values
-    const elements = [el];
-    el.childNodes.forEach(node => elements.push(node));
-
-    // Classlist
-    elements.forEach(el => el.classList.remove('cc-active'));
-  }
-
   init(state: any) {
     // Values
     this.addParams = state.filters.addParams;
     this.multiSelect = 3;
     this.actives = [];
-    this.fileName = 'areaOfApplications.ts';
-    this.paramName = 'anwendungsgebiet';
+    this.fileName = 'tastes.ts';
+    this.paramName = 'geschmack';
     this.commaSubstitution = '_c_';
     this.ampersandSubstitution = '_a_';
 
     // Elements
-    this.parent = state.elements.filters.querySelector(
-      '[c-el="area-of-application"]'
-    );
+    this.parent = state.elements.filters.querySelector('[c-el="tastes"]');
     this.buttons = this.parent?.querySelectorAll(
-      'label:not([c-el="no-button"])'
+      '.btn-main-filter__outline--effects-wrapper:not([c-el="no-button"])'
     );
 
     // Guard
@@ -53,13 +33,13 @@ class Class {
     this.buttons.forEach((btn: HTMLElement, index: number) => {
       // Generate value
       const value = btn
-        .querySelector('span')
+        .querySelector('.p-small')
         ?.innerHTML.toLowerCase()
         .replace(/,/g, this.commaSubstitution)
         .replace(/&amp;/g, this.ampersandSubstitution);
 
       // Set
-      btn.setAttribute('data-value', `${index}_-_${value}`);
+      btn.setAttribute('data-value', `${value}`);
     });
 
     // Initial state
@@ -81,7 +61,7 @@ class Class {
 
         // Click
         if (button) {
-          this.#addClass(button);
+          button.click();
           this.actives.push(str);
           btnsClicked++;
         }
@@ -129,11 +109,9 @@ class Class {
         // Logic
         if (this.actives.includes(value)) {
           this.#spliceActives(value);
-          this.#removeClass(btn);
         } else {
           // Push
           this.actives.push(value);
-          this.#addClass(btn);
 
           // Multiselect
           if (this.multiSelect < this.actives.length) {
@@ -149,8 +127,7 @@ class Class {
 
             // Click
             if (button) {
-              this.actives.splice(0, 1);
-              this.#removeClass(button);
+              button.click();
             } else
               console.warn(
                 `KannaMaps -> ${this.fileName}: "${this.actives[0]}" is an invalid param!`

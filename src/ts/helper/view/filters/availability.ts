@@ -7,6 +7,24 @@ import * as config from '../../../config';
 
 // + Class +
 class Class {
+  #addClass(el: HTMLElement) {
+    // Values
+    const elements = [el];
+    el.childNodes.forEach(node => elements.push(node));
+
+    // Classlist
+    elements.forEach(el => el.classList.add('cc-active'));
+  }
+
+  #removeClass(el: HTMLElement) {
+    // Values
+    const elements = [el];
+    el.childNodes.forEach(node => elements.push(node));
+
+    // Classlist
+    elements.forEach(el => el.classList.remove('cc-active'));
+  }
+
   init(state: any) {
     // Values
     this.addParams = state.filters.addParams;
@@ -30,7 +48,7 @@ class Class {
 
     // Click
     if (param === 'ja') {
-      this.button.click();
+      this.#addClass(this.button);
       this.active = true;
     }
 
@@ -45,8 +63,10 @@ class Class {
       // Logic
       if (this.active) {
         this.active = false;
+        this.#removeClass(this.button);
       } else {
         this.active = true;
+        this.#addClass(this.button);
       }
 
       // Add params

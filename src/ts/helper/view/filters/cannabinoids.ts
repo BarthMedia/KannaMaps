@@ -30,15 +30,13 @@ class Class {
     this.addParams = state.filters.addParams;
     this.multiSelect = 3;
     this.actives = [];
-    this.fileName = 'areaOfApplications.ts';
-    this.paramName = 'anwendungsgebiet';
+    this.fileName = 'cannabinoids.ts';
+    this.paramName = 'cannabinoid';
     this.commaSubstitution = '_c_';
     this.ampersandSubstitution = '_a_';
 
     // Elements
-    this.parent = state.elements.filters.querySelector(
-      '[c-el="area-of-application"]'
-    );
+    this.parent = state.elements.filters.querySelector('[c-el="cannabinoids"]');
     this.buttons = this.parent?.querySelectorAll(
       'label:not([c-el="no-button"])'
     );
@@ -59,7 +57,7 @@ class Class {
         .replace(/&amp;/g, this.ampersandSubstitution);
 
       // Set
-      btn.setAttribute('data-value', `${index}_-_${value}`);
+      btn.setAttribute('data-value', `${value}`);
     });
 
     // Initial state
