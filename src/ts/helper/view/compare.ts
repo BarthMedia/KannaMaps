@@ -7,8 +7,6 @@ import * as config from '../../config';
 
 // + Exports +
 export default function (state: any, data: any) {
-  console.log(state, data);
-
   // Click popup open button!
 
   // Elements
@@ -89,6 +87,11 @@ export default function (state: any, data: any) {
     if (price)
       price.innerHTML =
         data?.price?.toFixed(2)?.replace('.', ',') || notAvailableString;
+
+    // Click
+    clone.addEventListener('click', () => {
+      if (data._vendor.live_url) location.href = data._vendor.live_url;
+    });
 
     // Append
     state.elements.compareTemplateList.append(clone);
