@@ -25,6 +25,34 @@ export default function (clone: HTMLElement, index: number) {
 
   // + Manipulate +
 
+  // Price
+  const price = clone.querySelector('[c-el="price-from"]');
+  const priceText = clone.querySelector('[c-el="price-text"]');
+  const priceParent = clone.querySelector('[c-el="price-parent"]');
+  if (price && priceText && priceParent) {
+    // Values & logic
+    const p: number | null = data.data.apothecaries_data.price_min;
+    if (p !== null) {
+      // Overwrite
+      price.innerHTML = p.toString().replace('.', ',');
+    } else {
+      // Inactivate
+      priceText.innerHTML = notAvailableString;
+      priceParent.classList.add('inactive');
+    }
+  }
+
+  // Comparison
+  if (priceParent && data.data.apothecaries_data.detailed.length) {
+    // Elements
+    const btn = clone.querySelector('[c-el="compare"]');
+
+    // Event
+    btn?.addEventListener('click', () => {
+      window.KannaMaps.compare(data);
+    });
+  }
+
   // Terpenes
   const terpenes = clone.querySelector('[c-el="terpenes-wrapper"]');
   const terpeneWrappers = terpenes?.querySelectorAll('.p-relative-2.center');
@@ -44,7 +72,7 @@ export default function (clone: HTMLElement, index: number) {
       'Gehalt—CBD',
       'Hersteller',
       'Bestrahlung',
-      'Terpendichte mg/g',
+      'Terpendichte—mg/g',
     ];
 
     // Create an array of key-value objects without the specified keys
@@ -115,23 +143,6 @@ export default function (clone: HTMLElement, index: number) {
         node.classList.add('cc-inactive')
       );
       nonAvailableEffects.classList.remove('cc-inactive');
-    }
-  }
-
-  // Price
-  const price = clone.querySelector('[c-el="price-from"]');
-  const priceText = clone.querySelector('[c-el="price-text"]');
-  const priceParent = clone.querySelector('[c-el="price-parent"]');
-  if (price && priceText && priceParent) {
-    // Values & logic
-    const p: number | null = data.data.apothecaries_data.price_min;
-    if (p !== null) {
-      // Overwrite
-      price.innerHTML = p.toString().replace('.', ',');
-    } else {
-      // Inactivate
-      priceText.innerHTML = notAvailableString;
-      priceParent.classList.add('inactive');
     }
   }
 
@@ -219,7 +230,10 @@ export default function (clone: HTMLElement, index: number) {
         'href',
         dataUrl + (url.getAttribute('data-suffix') || '')
       );
-      url.addEventListener('click', () => url.classList.add('cc-loading'));
+      url.addEventListener('click', () => {
+        url.classList.add('cc-loading');
+        state.elements.transitionLoader.classList.remove('pointer-events-none');
+      });
     });
 
   // Genetics
@@ -231,8 +245,13 @@ export default function (clone: HTMLElement, index: number) {
   // Availability
   const availibitly = clone.querySelector('[c-el="availibitly"]');
   if (availibitly) {
-    if (data.data.apothecaries_data.availability_status !== 'available')
+    if (data.data.apothecaries_data.availability_status !== 'available') {
       availibitly.classList.add('cc-inactive');
+      availibitly.childNodes[0]['classList']?.add('non-available');
+    } else {
+      availibitly.classList.remove('cc-inactive');
+      availibitly.childNodes[0]['classList']?.remove('non-available');
+    }
   }
 
   // Thc

@@ -23,7 +23,7 @@ import priceRange from './filters/priceRange';
 export default function init(state: any) {
   // Elements
   const filters = document.querySelector('[c-el="filters"]');
-  const reset = filters?.querySelector('[c-el="reset"]');
+  const reset = filters?.querySelector('[c-el="reset"]') as HTMLElement;
   state.elements.filters = filters;
   state.elements.reset = reset;
 
@@ -133,11 +133,28 @@ export default function init(state: any) {
   });
 
   // Reset event listener
-  reset.addEventListener('click', () => {
+  function resetF() {
+    // Events
+    reset.dispatchEvent(
+      new CustomEvent('onReset', {
+        bubbles: true,
+      })
+    );
+
+    // Loop
     functionRegister.forEach(f => {
       f['reset']();
     });
-  });
+
+    // Events
+    reset.dispatchEvent(
+      new CustomEvent('afterReset', {
+        bubbles: true,
+      })
+    );
+  }
+  reset.addEventListener('click', resetF);
+  state.filters.reset = resetF;
 
   // Init reset button styles
   if (location.search !== '') reset?.classList.remove('cc-inactive');

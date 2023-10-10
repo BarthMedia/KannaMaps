@@ -29,6 +29,17 @@ export default function () {
   // Manipulate
   paginationNumberTemplate.classList.remove('cc-current');
 
+  // Transition loader
+  const loader = document.querySelector('[c-el="transition-loader"]');
+
+  // Price pop-up
+  const compareTemplateList = document.querySelector(
+    '[c-el="apothecary-list"]'
+  );
+  const compareItemTemplate = compareTemplateList?.children[0].cloneNode(
+    true
+  ) as HTMLElement;
+
   // * Append *
 
   // Rendering
@@ -39,6 +50,13 @@ export default function () {
   obj.paginationNumberTemplate = paginationNumberTemplate;
   obj.totalResults = totalResults;
   obj.totalResultsPlural = totalResultsPlural;
+
+  // Loader
+  obj.transitionLoader = loader;
+
+  // Compare
+  obj.compareTemplateList = compareTemplateList;
+  obj.compareItemTemplate = compareItemTemplate;
 
   // Return
   return obj;

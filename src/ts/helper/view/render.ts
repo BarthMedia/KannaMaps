@@ -107,7 +107,8 @@ export default function (showSkeleton: boolean) {
     else state.elements.emptyState.style.display = 'flex';
 
     // Pagination
-    if (data.pageTotal < 2) state.elements.emptyState.style.display = 'none';
+    if (data.pageTotal < 2)
+      state.elements.paginationWrapper.style.display = 'none';
     else {
       initPagination();
       state.elements.paginationWrapper.style.display = 'flex';
