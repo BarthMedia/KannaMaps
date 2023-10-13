@@ -134,7 +134,8 @@ export default function (clone: HTMLElement, index: number) {
         const text = el.querySelector('.product-card-tag.p-small');
 
         // Logic
-        if (text && e[index]) text.innerHTML = e[index];
+        if (text && e[index])
+          text.innerHTML = utils.capitalizeEveryWord(e[index], true);
         else el.classList.add('cc-inactive');
       });
     } else {
