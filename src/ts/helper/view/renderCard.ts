@@ -126,7 +126,7 @@ export default function (clone: HTMLElement, index: number) {
     const e: any[] = data.data.community_data.simple.posivitve_effects;
     if (e.length) {
       // Sort
-      e.sort((a, b) => b.confirmations - a.confirmations);
+      //  e.sort((a, b) => b.confirmations - a.confirmations);
 
       // Render
       effectWrappers.forEach((el, index) => {
@@ -134,7 +134,7 @@ export default function (clone: HTMLElement, index: number) {
         const text = el.querySelector('.product-card-tag.p-small');
 
         // Logic
-        if (text && e[index]) text.innerHTML = e[index].text;
+        if (text && e[index]) text.innerHTML = e[index];
         else el.classList.add('cc-inactive');
       });
     } else {
