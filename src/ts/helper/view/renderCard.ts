@@ -123,7 +123,7 @@ export default function (clone: HTMLElement, index: number) {
   );
   if (effects && nonAvailableEffects && effectWrappers?.length === 3) {
     // Logic
-    const e: any[] = data.data.community_data.effects;
+    const e: any[] = data.data.community_data.simple.posivitve_effects;
     if (e.length) {
       // Sort
       e.sort((a, b) => b.confirmations - a.confirmations);
