@@ -25,6 +25,10 @@ export default function (clone: HTMLElement, index: number) {
 
   // + Manipulate +
 
+  // Producer
+  const producer = clone.querySelector('[c-el="producer"]');
+  if (producer) producer.innerHTML = data.data.detailed.Hersteller;
+
   // Price
   const price = clone.querySelector('[c-el="price-from"]');
   const priceText = clone.querySelector('[c-el="price-text"]');
@@ -123,7 +127,7 @@ export default function (clone: HTMLElement, index: number) {
   );
   if (effects && nonAvailableEffects && effectWrappers?.length === 3) {
     // Logic
-    const e: any[] = data.data.community_data.simple.posivitve_effects;
+    const e: any[] = data.data.community_data.simple.positive_effects;
     if (e.length) {
       // Sort
       //  e.sort((a, b) => b.confirmations - a.confirmations);
