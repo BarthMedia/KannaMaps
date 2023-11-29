@@ -94,15 +94,47 @@ export default function (clone: HTMLElement, index: number) {
 
     // Logic
     if (e.length) {
+      // Return terpene percentage
+      function returnTerpenePercentage(index: number) {
+        // Count
+        let all = 0;
+        for (let i = 0, n = 4; i < n; i++) {
+          // Values
+          const val = parseFloat(e[i].value || '');
+
+          // Logic
+          if (!isNaN(val)) all += val;
+        }
+
+        // Values
+        const divider = parseFloat(e[index].value || '');
+
+        // Guard
+        if (isNaN(divider)) return null;
+
+        // Return
+        return ((divider / all) * 100).toFixed(0) + '%';
+      }
+
       // Render
       terpeneWrappers.forEach((el, index) => {
         // Elements
         const text = el.querySelector('.product-card-tag.p-small');
         const dot = el.querySelector('.terpen-gradient-wrapper');
+        const percentage = el.querySelector(
+          '[c-el="terpene-percentage"]'
+        ) as HTMLElement | null;
 
         // Color logic
         dot?.classList.remove('alpha', 'linalool', 'd-limone');
         dot?.classList.add(e[index]?.key?.toLowerCase().replace(' ', '-'));
+
+        // Percentage
+        const percentageVal = returnTerpenePercentage(index);
+        if (percentage && percentageVal) {
+          percentage.classList.remove('hide');
+          percentage.innerHTML = percentageVal;
+        } else percentage?.classList.add('hide');
 
         // Logic
         if (text && e[index]) {
@@ -200,13 +232,24 @@ export default function (clone: HTMLElement, index: number) {
       ratingNumber.innerHTML = r.toString().replace('.', ',');
       ratingsTotal.innerHTML = data.data.community_data.ratings;
 
+      // Hex
+      const attrFill = 'star-rating-hex-fill';
+      const hexFill =
+        '#' + document.querySelector(`[${attrFill}]`)?.getAttribute(attrFill) ||
+        '000';
+      const attrEmpty = 'star-rating-hex-empty';
+      const hexEmpty =
+        '#' +
+          document.querySelector(`[${attrEmpty}]`)?.getAttribute(attrEmpty) ||
+        'f9f8f8';
+
       // Stars
       stars.forEach((star, i) => {
         // Math
         const x = (Math.min(i + 1, r) - i) * 100;
 
         // Modify gradient
-        star.style.backgroundImage = `linear-gradient(to right, #000, #000 ${x}%, #f9f8f8 ${x}%)`;
+        star.style.backgroundImage = `linear-gradient(to right, ${hexFill}, ${hexFill} ${x}%, ${hexEmpty} ${x}%)`;
       });
     } else {
       // Show / hide
